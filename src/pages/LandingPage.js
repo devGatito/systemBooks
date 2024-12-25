@@ -12,7 +12,9 @@ function LandingPage () {
             return () => clearTimeout(timer);
     }, [navigate]);
 
-    return <div>Bienvenido a la tienda de libros. Redirigiendo...</div>     
+    return <div>
+                <h1>Bienvenido a Relatos de Papel. Cargando... </h1>
+            </div>     
     
 }
 export default LandingPage;

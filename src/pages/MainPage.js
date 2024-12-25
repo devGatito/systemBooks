@@ -1,90 +1,108 @@
 import React, { useState } from "react";
+import { useCart } from "../context/CartContext"; 
 import { Link } from "react-router-dom";
 import SearchBar from '../components/SearchBar';
 
 const books = [
     {
         "id": 1,
-        "name": "El Amor en los Tiempos del Cólera",
+        "title": "El Amor en los Tiempos del Cólera",
         "author":"Gabriel Garcia Marquez",
         "price": 69000,
-        "img": "https://images.cdn3.buscalibre.com/fit-in/360x360/96/2a/962a2176af9fc9b9c89b567f1f7548e8.jpg",
+        "cover": '/images/el amor en tiempos de colera.jpg',
         
     },
 
     {
         "id": 2,
-        "name": "Paraiso Travel",
+        "title": "Paraiso Travel",
         "author":"Jorge Franco",
         "price": 41400,
-        "img": "https://images.cdn1.buscalibre.com/fit-in/360x360/b3/e0/b3e02aaa4be213b7690cff7b7917c18c.jpg",
+        "cover": '/images/paraiso travel.jpg',
         
     },
 
     {
         "id": 3,
-        "name": "Viaje al Final del Paraiso",
+        "title": "Viaje al Final del Paraiso",
         "author":"Oscar Pinochet De La Barra",
         "price": 140000,
-        "img": "https://images.cdn2.buscalibre.com/fit-in/360x360/87/e2/87e296100f2fc1d0a8b7ea0d415b4885.jpg",
+        "cover": '/images/viaje al final del paraiso.jpg',
         
     },
 
     {
         "id": 4,
-        "name": "El Tunel",
+        "title": "El Tunel",
         "author":"Ernesto Sabato",
         "price": 70000,
-        "img": "https://images.cdn2.buscalibre.com/fit-in/360x360/1b/89/1b894384b151e0fb96bc2f4636a82fd4.jpg",
+        "cover": '/images/el tunel.jpg',
         
     },
     
     {
         "id": 5,
-        "name": "Una Corte de Alas y Ruina",
+        "title": "Una Corte de Alas y Ruina",
         "author":"Sarah J. Maas",
         "price": 89100,
-        "img": "https://images.cdn2.buscalibre.com/fit-in/360x360/4c/cb/4ccb9141593d19be41765429de111565.jpg",
+        "cover": '/images/una corte de alas y ruina.jpg',
         
     },
 
     {
         "id": 6,
-        "name": "Julio En Su Salsa",
+        "title": "Tulio En Su Salsa",
         "author":"Tulio Zuloaga",
         "price": 62100,
-        "img": "https://images.cdn2.buscalibre.com/fit-in/360x360/af/de/afdecc4c56a417ba83ff0b2185212b58.jpg",
+       "cover": '/images/tulio en su salsa.jpg',
         
     },
 
     {
         "id": 7,
-        "name": "A traves de ti",
+        "title": "A traves de ti",
         "author":"Ariana Godoy",
         "price": 55800,
-        "img": "https://images.cdn2.buscalibre.com/fit-in/360x360/a3/8c/a38cebf9cc28e638c4db17106b67a756.jpg",
-        
-    }
+        "cover": '/images/a traves de ti.jpg',
+      
+    },
+          
 ];
 
 function MainPage() {
-    const [ searchTerm, setSearchTerm] = useState ('');
-    const filteredBooks = books.filter((book) =>
-        (book.title && book.title.toLowerCase().includes(searchTerm.toLowerCase())) || ''
-      );
-    
-    return(
-        <div>
-        <h1>Tienda de Libros</h1>
-        <SearchBar onSearch={setSearchTerm} />
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para la búsqueda
+  const { cart, addToCart } = useCart(); // Accede al carrito y a la función para agregar libros
+  const filteredBooks = books.filter((book) =>
+    book.title.toLowerCase().includes(searchTerm.toLowerCase()) // Filtra los libros por título
+  );
+
+  return (
+    <div className="main-container">
+      <h1>Tienda de Libros</h1>
+      <SearchBar onSearch={setSearchTerm} /> {/* Barra de búsqueda */}
+      <h2>Libros disponibles</h2>
+      <div className="books-container">
+        {filteredBooks.map((book) => (
+          <div key={book.id} className="book-item">
+            <img src={book.cover} alt={book.title} className="book-cover" />
+            <p>{book.title} - ${book.price}</p>
+            <button onClick={() => addToCart(book)} className="add-to-cart-btn">Agregar al carrito</button> {/* Agregar al carrito */}
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <h3>Carrito ({cart.length} libros)</h3>
         <ul>
-          {filteredBooks.map((book) => (
+          {cart.map((book) => (
             <li key={book.id}>
-              <Link to={`/book/${book.id}`}>{book.title}</Link>
+              {book.title} - ${book.price}
             </li>
           ))}
         </ul>
       </div>
-    );
+    </div>
+  );
 }
+
 export default MainPage;

@@ -5,13 +5,14 @@ import MainPage from './pages/MainPage';
 import BookPage from './pages/BookPage';
 import CheckoutPage from './pages/CheckoutPage';
 import { CartProvider } from './context/CartContext';
-import Cart from './components/Cart';
+import Cart from './components/Cart'
+
 
 function App() {
   return (
     <CartProvider>
       <Router>
-        <Cart /> {/* Carrito siempre visible */}
+      <Cart /> {/* Carrito siempre visible */}      
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/main" element={<MainPage />} />

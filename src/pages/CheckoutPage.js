@@ -1,26 +1,38 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from '../pages/LandingPage';
-import MainPage from '../pages/MainPage';
-import BookPage from '../pages/BookPage';
-import CheckoutPage from '../pages/CheckoutPage';
-import { CartProvider } from '../context/CartContext';
-import Cart from '../components/Cart';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext'; 
 
-function App() {
+function CheckoutPage() {
+  const { cart, clearCart } = useCart(); // Obtiene el carrito
+  const navigate = useNavigate();
+  const totalPrice = cart.reduce((total, book) => total + book.price, 0);
+
+  const handleConfirm = () => {
+    alert('¡Pedido realizado con éxito!');
+    clearCart(); // Vaciar el carrito después de la compra
+    navigate('/main'); // Redirigir a la página principal
+  };
+
   return (
-    <CartProvider>
-      <Router>
-        <Cart /> {/* Carrito siempre visible */}
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/main" element={<MainPage />} />
-          <Route path="/book/:id" element={<BookPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-        </Routes>
-      </Router>
-    </CartProvider>
+    <div>
+      <h1>Resumen de la compra</h1>
+      {cart.length === 0 ? (
+        <p>No tienes libros en el carrito.</p>
+      ) : (
+        <>
+          <ul>
+            {cart.map((book) => (
+              <li key={book.id}>
+                {book.title} - ${book.price}
+              </li>
+            ))}
+          </ul>
+          <h2>Total: ${totalPrice}</h2>
+          <button onClick={handleConfirm}>Confirmar compra</button>
+        </>
+      )}
+    </div>
   );
 }
 
-export default App;
+export default CheckoutPage;
