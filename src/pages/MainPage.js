@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { useCart } from "../context/CartContext"; 
 import { Link } from "react-router-dom";
 import SearchBar from '../components/SearchBar';
@@ -73,12 +73,10 @@ const books = [
 
 function MainPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { addToCart, cartCount } = useCart(); // Obtener el número de libros en el carrito
-
-  // Usamos useMemo para evitar recalcular el filtro en cada renderizado innecesario
-  const filteredBooks = useMemo(() => {
-    return books.filter((book) => book.title.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [searchTerm]);
+  const { addToCart } = useCart(); // Accede a la función de añadir al carrito
+  const filteredBooks = books.filter((book) =>
+    book.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
@@ -90,16 +88,10 @@ function MainPage() {
           <div key={book.id} className="book-item">
             <img src={book.cover} alt={book.title} className="book-cover" />
             <p>{book.title} - ${book.price}</p>
-            <Link to={`/book/${book.id}`}>Ver detalles</Link>
-            <button onClick={() => addToCart(book)}>Agregar al carrito</button>
+            <Link to={`/book/${book.id}`}>Ver detalles</Link> {/* Navegar a la página de detalles del libro */}
           </div>
         ))}
       </div>
-      <Link to="/cart">
-        <button>
-          Ver carrito ({cartCount} libro{cartCount !== 1 && 's'}) {/* Mostrar número de libros */}
-        </button>
-      </Link>
     </div>
   );
 }

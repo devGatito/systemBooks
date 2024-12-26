@@ -11,7 +11,13 @@ function Cart() {
         {cart.map((item) => (
           <li key={item.id}>
             {item.title} - ${item.price}
-            <button onClick={() => removeFromCart(item.id)}>Eliminar</button>
+            <button
+                onClick={() => {
+                  removeFromCart(item.id);
+                }}
+              >
+                Eliminar
+              </button>
           </li>
         ))}
       </ul>

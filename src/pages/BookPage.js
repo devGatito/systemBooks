@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext'; 
 
@@ -68,35 +68,28 @@ import { useCart } from '../context/CartContext';
     },
 ];
 
-const BookPage = memo(() => {
+function BookPage() {
   const { id } = useParams(); // Obtener el id del libro de la URL
   const [book, setBook] = useState(null); // Estado para el libro seleccionado
-  const [message, setMessage] = useState(''); // Mensaje de agradecimiento
-  const { addToCart } = useCart(); // Accede al carrito
+  const [message, setMessage] = useState(''); // Estado para mostrar el mensaje de compra
+  const { addToCart } = useCart(); // Función para agregar al carrito
   const navigate = useNavigate(); // Para navegar después de la compra
 
-  // Validación del id para evitar errores si el id no es válido
+  // Buscar el libro en los datos
   useEffect(() => {
     const selectedBook = books.find((book) => book.id === parseInt(id)); // Buscar el libro por id
-    if (selectedBook) {
-      setBook(selectedBook);
-    } else {
-      // Redirigir a la página principal si el libro no existe
-      navigate('/main');
-    }
-  }, [id, navigate]);
+    setBook(selectedBook);
+  }, [id]);
 
-  // Función para manejar la compra
   const handleBuy = () => {
-    addToCart(book); // Agregar al carrito
-    setMessage('¡Gracias por su compra!'); // Mensaje de compra exitosa
+    addToCart(book); // Agregar el libro al carrito
+    setMessage('¡Gracias por su compra!'); // Mostrar mensaje de agradecimiento
     setTimeout(() => {
-      navigate('/main'); // Redirigir a la página principal
+      navigate('/main'); // Redirigir a la página principal después de 3 segundos
     }, 3000);
   };
 
-  // Validar si el libro está cargado
-  if (!book) return <p>Libro no encontrado</p>;
+  if (!book) return <p>Cargando...</p>; // Mientras se carga el libro
 
   return (
     <div className="book-details">
@@ -104,10 +97,11 @@ const BookPage = memo(() => {
       <img src={book.cover} alt={book.title} className="book-cover" />
       <p><strong>Autor:</strong> {book.author}</p>
       <p><strong>Precio:</strong> ${book.price}</p>
+      <p><strong>Portada:</strong> ${book.cover}</p>
       <button onClick={handleBuy}>Comprar</button>
       {message && <p>{message}</p>} {/* Mostrar mensaje de compra */}
     </div>
   );
-});
+}
 
 export default BookPage;

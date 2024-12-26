@@ -5,8 +5,8 @@ import MainPage from './pages/MainPage';
 import BookPage from './pages/BookPage';
 import CheckoutPage from './pages/CheckoutPage';
 import { CartProvider } from './context/CartContext';
-import Cart from './components/Cart'
-import CartPage from './pages/CartPage';
+import Cart from './components/Cart';
+
 import './styles.css'; 
 
 
@@ -21,7 +21,7 @@ function App() {
           <Route path="/main" element={<MainPage />} />
           <Route path="/book/:id" element={<BookPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/cart" element={<CartPage/>}/>
+                   
         </Routes>
       </Router>
     </CartProvider>
