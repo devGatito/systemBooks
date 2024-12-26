@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useCart } from "../context/CartContext"; 
 import { Link } from "react-router-dom";
 import SearchBar from '../components/SearchBar';
+
+
 
 const books = [
     {
@@ -70,37 +72,34 @@ const books = [
 ];
 
 function MainPage() {
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para la búsqueda
-  const { cart, addToCart } = useCart(); // Accede al carrito y a la función para agregar libros
-  const filteredBooks = books.filter((book) =>
-    book.title.toLowerCase().includes(searchTerm.toLowerCase()) // Filtra los libros por título
-  );
+  const [searchTerm, setSearchTerm] = useState('');
+  const { addToCart, cartCount } = useCart(); // Obtener el número de libros en el carrito
+
+  // Usamos useMemo para evitar recalcular el filtro en cada renderizado innecesario
+  const filteredBooks = useMemo(() => {
+    return books.filter((book) => book.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [searchTerm]);
 
   return (
-    <div className="main-container">
+    <div>
       <h1>Tienda de Libros</h1>
-      <SearchBar onSearch={setSearchTerm} /> {/* Barra de búsqueda */}
+      <SearchBar onSearch={setSearchTerm} />
       <h2>Libros disponibles</h2>
       <div className="books-container">
         {filteredBooks.map((book) => (
           <div key={book.id} className="book-item">
             <img src={book.cover} alt={book.title} className="book-cover" />
             <p>{book.title} - ${book.price}</p>
-            <button onClick={() => addToCart(book)} className="add-to-cart-btn">Agregar al carrito</button> {/* Agregar al carrito */}
+            <Link to={`/book/${book.id}`}>Ver detalles</Link>
+            <button onClick={() => addToCart(book)}>Agregar al carrito</button>
           </div>
         ))}
       </div>
-
-      <div>
-        <h3>Carrito ({cart.length} libros)</h3>
-        <ul>
-          {cart.map((book) => (
-            <li key={book.id}>
-              {book.title} - ${book.price}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <Link to="/cart">
+        <button>
+          Ver carrito ({cartCount} libro{cartCount !== 1 && 's'}) {/* Mostrar número de libros */}
+        </button>
+      </Link>
     </div>
   );
 }

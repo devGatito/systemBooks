@@ -6,6 +6,9 @@ import BookPage from './pages/BookPage';
 import CheckoutPage from './pages/CheckoutPage';
 import { CartProvider } from './context/CartContext';
 import Cart from './components/Cart'
+import CartPage from './pages/CartPage';
+import './styles.css'; 
+
 
 
 function App() {
@@ -18,6 +21,7 @@ function App() {
           <Route path="/main" element={<MainPage />} />
           <Route path="/book/:id" element={<BookPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/cart" element={<CartPage/>}/>
         </Routes>
       </Router>
     </CartProvider>
