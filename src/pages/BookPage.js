@@ -2,104 +2,72 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext'; 
 
-
-  const books = [
-    {
-        "id": 1,
-        "title": "El Amor en los Tiempos del Cólera",
-        "author":"Gabriel Garcia Marquez",
-        "price": 69000,
-        "cover": '/images/el amor en tiempos de colera.jpg',
-        
-    },
-
-    {
-        "id": 2,
-        "title": "Paraiso Travel",
-        "author":"Jorge Franco",
-        "price": 41400,
-        "cover": '/images/paraiso travel.jpg',
-        
-    },
-
-    {
-        "id": 3,
-        "title": "Viaje al Final del Paraiso",
-        "author":"Oscar Pinochet De La Barra",
-        "price": 140000,
-        "cover": '/images/viaje al final del paraiso.jpg',
-        
-    },
-
-    {
-        "id": 4,
-        "title": "El Tunel",
-        "author":"Ernesto Sabato",
-        "price": 70000,
-        "cover": '/images/el tunel.jpg',
-        
-    },
-    
-    {
-        "id": 5,
-        "title": "Una Corte de Alas y Ruina",
-        "author":"Sarah J. Maas",
-        "price": 89100,
-        "cover": '/images/una corte de alas y ruina.jpg',
-        
-    },
-
-    {
-        "id": 6,
-        "title": "Tulio En Su Salsa",
-        "author":"Tulio Zuloaga",
-        "price": 62100,
-       "cover": '/images/tulio en su salsa.jpg',
-        
-    },
-
-    {
-        "id": 7,
-        "title": "A traves de ti",
-        "author":"Ariana Godoy",
-        "price": 55800,
-        "cover": '/images/a traves de ti.jpg',
-      
-    },
+const books = [
+  {
+    "id": 1,
+    "title": "El Amor en los Tiempos del Cólera",
+    "author": "Gabriel Garcia Marquez",
+    "price": 69000,
+    "cover": '/images/el amor en tiempos de colera.jpg',
+  },
 ];
 
 function BookPage() {
-  const { id } = useParams(); // Obtener el id del libro de la URL
-  const [book, setBook] = useState(null); // Estado para el libro seleccionado
-  const [message, setMessage] = useState(''); // Estado para mostrar el mensaje de compra
-  const { addToCart } = useCart(); // Función para agregar al carrito
-  const navigate = useNavigate(); // Para navegar después de la compra
+  const { id } = useParams();
+  const [book, setBook] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
 
-  // Buscar el libro en los datos
   useEffect(() => {
-    const selectedBook = books.find((book) => book.id === parseInt(id)); // Buscar el libro por id
+    const selectedBook = books.find((book) => book.id === parseInt(id));
     setBook(selectedBook);
   }, [id]);
 
   const handleBuy = () => {
-    addToCart(book); // Agregar el libro al carrito
-    setMessage('¡Gracias por su compra!'); // Mostrar mensaje de agradecimiento
-    setTimeout(() => {
-      navigate('/main'); // Redirigir a la página principal después de 3 segundos
-    }, 3000);
+    addToCart(book);
+    setIsModalOpen(true); // Mostrar modal
   };
 
-  if (!book) return <p>Cargando...</p>; // Mientras se carga el libro
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => {
+      navigate('/main'); // Redirigir después de cerrar el modal
+    }, 300);
+  };
+
+  if (!book) return <p className="text-center mt-10">No existe el libro...</p>;
 
   return (
-    <div className="book-details">
-      <h1>{book.title}</h1>
-      <img src={book.cover} alt={book.title} className="book-cover" />
-      <p><strong>Autor:</strong> {book.author}</p>
-      <p><strong>Precio:</strong> ${book.price}</p>
-      <p><strong>Portada:</strong> ${book.cover}</p>
-      <button onClick={handleBuy}>Comprar</button>
-      {message && <p>{message}</p>} {/* Mostrar mensaje de compra */}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-6 max-w-md text-center">
+        <h1 className="text-2xl font-bold mb-4">{book.title}</h1>
+        <img src={book.cover} alt={book.title} className="w-full h-auto rounded-lg mb-4" />
+        <p className="text-gray-700"><strong>Autor:</strong> {book.author}</p>
+        <p className="text-gray-700"><strong>Precio:</strong> ${book.price}</p>
+        <button
+          onClick={handleBuy}
+          className="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg"
+        >
+          Comprar
+        </button>
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm animate-modal-in">
+            <h2 className="text-2xl font-bold mb-4">¡Gracias por su compra!</h2>
+            <p className="text-gray-700 mb-4">El libro "{book.title}" ha sido añadido a su carrito.</p>
+            <button
+              onClick={closeModal}
+              className="mt-4 bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg"
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
